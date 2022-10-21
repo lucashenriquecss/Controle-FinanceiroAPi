@@ -31,11 +31,11 @@ class DespesasSerializer(serializers.ModelSerializer):
 
     def validate_descricao(self,descricao):
         x = datetime.datetime.now()
-
         if len(descricao) <= 2:
             raise serializers.ValidationError({'descricao':"A descrição deve ter mais de 2 letras"})
         for instance in Despesas.objects.all():
             if instance.data.strftime("%B") == x.strftime("%B") and instance.descricao == descricao: 
                 print(instance.data.strftime("%B"))
                 raise serializers.ValidationError({'data':"A descrição ja existe este mes"})
-        return descricao    
+        return descricao
+    
