@@ -1,3 +1,4 @@
+from attr import fields
 from rest_framework import serializers
 from financeiro.models import Despesas, Receitas
 import datetime
@@ -17,13 +18,15 @@ class ReceitasSerializer(serializers.ModelSerializer):
             if instance.data.strftime("%B") == x.strftime("%B") and instance.descricao == descricao: 
                 raise serializers.ValidationError({'data':"A descrição ja existe este mes"})
         return descricao
+   
+class ListaReceitasPorMesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Receitas
+        fields = fields = ['descricao','valor','data']
 
+
+   
     
-        
-
-
-
-
 class DespesasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Despesas
@@ -38,4 +41,12 @@ class DespesasSerializer(serializers.ModelSerializer):
                 print(instance.data.strftime("%B"))
                 raise serializers.ValidationError({'data':"A descrição ja existe este mes"})
         return descricao
-    
+
+
+class ListaDespesasPorMesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Despesas
+        fields = ['descricao','valor','data']
+
+
+ 
