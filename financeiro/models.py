@@ -1,10 +1,12 @@
 
 from django.db import models
 from datetime import  datetime
+from django.contrib.auth.models import User
 # Create your models here.
 
 
 class Receitas(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     descricao = models.CharField(max_length=200,blank=False)
     valor = models.IntegerField(blank=False)
     data = models.DateField(default=datetime.now, blank=False)
@@ -26,6 +28,7 @@ CATEGORIA = (
 
 )
 class Despesas(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     descricao = models.CharField(max_length=200,blank=False)
     valor = models.IntegerField(blank=False)
     data = models.DateField(default=datetime.now, blank=False)

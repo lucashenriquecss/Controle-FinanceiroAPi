@@ -4,18 +4,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, generics
 from financeiro.models import Despesas, Receitas
-from financeiro.serializers import DespesasSerializer, ReceitasSerializer,ListaReceitasPorMesSerializer,ListaDespesasPorMesSerializer
+from financeiro.serializers import CriarUsuarioSerializer,ListarUsuarioSerializer, DespesasSerializer, ReceitasSerializer,ListaReceitasPorMesSerializer,ListaDespesasPorMesSerializer
 from rest_framework import filters
+from django.contrib.auth.models import User
 from django.db.models import Sum
+from rest_framework.permissions import AllowAny,IsAuthenticated
 
 # Create your views here.
 import datetime
+
 
 class ReceitasViewSet(viewsets.ModelViewSet):
     queryset = Receitas.objects.all()
     serializer_class = ReceitasSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['descricao']
+    # def get_queryset(self):
+    #     return Receitas.objects.filter(usuario = self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
 
 
 
@@ -24,6 +32,11 @@ class DespesasViewSet(viewsets.ModelViewSet):
     serializer_class = DespesasSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['descricao']
+    # def get_queryset(self):
+    #     return Despesas.objects.filter(usuario = self.request.user)
+
+    # def perform_create(self, serializer):
+    #     serializer.save(usuario=self.request.user)
 
 
 class ListaReceitasPorMesViewSet(generics.ListAPIView):
@@ -51,4 +64,15 @@ class ResumodoMesView(APIView):
             'Gasto por categoria' : categoria,
         
         })
-   
+
+
+class CriarUsuarioViewset(generics.CreateAPIView):
+    serializer_class = CriarUsuarioSerializer
+    permission_classes = [AllowAny]
+
+class UsuarioViewSet (viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ListarUsuarioSerializer
+    http_method_names = ['get']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['email','username']  
