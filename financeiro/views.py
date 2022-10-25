@@ -18,6 +18,7 @@ class ReceitasViewSet(viewsets.ModelViewSet):
     queryset = Receitas.objects.all()
     serializer_class = ReceitasSerializer
     filter_backends = [filters.SearchFilter]
+    permission_classes = [IsAuthenticated]
     search_fields = ['descricao']
     # def get_queryset(self):
     #     return Receitas.objects.filter(usuario = self.request.user)
@@ -31,6 +32,7 @@ class DespesasViewSet(viewsets.ModelViewSet):
     queryset = Despesas.objects.all()
     serializer_class = DespesasSerializer
     filter_backends = [filters.SearchFilter]
+    permission_classes = [IsAuthenticated]
     search_fields = ['descricao']
     # def get_queryset(self):
     #     return Despesas.objects.filter(usuario = self.request.user)
@@ -40,18 +42,21 @@ class DespesasViewSet(viewsets.ModelViewSet):
 
 
 class ListaReceitasPorMesViewSet(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         queryset = Receitas.objects.filter(data__year = self.kwargs['year'] , data__month = self.kwargs['month'])
         return queryset
     serializer_class = ListaReceitasPorMesSerializer
 
 class ListaDespesasPorMesViewSet(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         queryset = Despesas.objects.filter(data__year = self.kwargs['year'] , data__month = self.kwargs['month'])
         return queryset
     serializer_class = ListaDespesasPorMesSerializer
 
 class ResumodoMesView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self,request,mes,ano):
         receita_mes =  Receitas.objects.filter(data__month = mes,data__year =ano).aggregate(TOTAL = Sum('valor'))['TOTAL']
         despesa_mes =  Despesas.objects.filter(data__month = mes,data__year =ano).aggregate(TOTAL = Sum('valor'))['TOTAL']
@@ -71,6 +76,7 @@ class CriarUsuarioViewset(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class UsuarioViewSet (viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = ListarUsuarioSerializer
     http_method_names = ['get']
